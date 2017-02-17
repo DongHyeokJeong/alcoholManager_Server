@@ -3,9 +3,20 @@
   <head>
     <title><%= title %></title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/socket.io/socket.io.js"></script>
+      <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+        $(document).ready(function() {
+            var socket = io();
+
+            $('#btn_Enter').click(function(e){
+                socket.emit('personal info', {"NAME":"dong","WEIGHT":"83kg","SEX":"male","CAPACITY":"16"});
+            });
+        });
+    </script>
   </head>
   <body>
     <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <button id="btn_Enter">good</button>
   </body>
 </html>
