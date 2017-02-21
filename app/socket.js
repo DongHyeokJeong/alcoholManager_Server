@@ -7,9 +7,15 @@ const Schema = mongoose.Schema;
 const timelineSchema = mongoose.Schema({
     TODAY: String
 });
+const userInfoSchema = mongoose.Schema({
+    NAME: String,
+    WEIGHT: Number,
+    SEX: String,
+    TODAY: Number
+});
 
 const timelineModel = mongoose.model('TIMELINE_COL', timelineSchema, 'TIMELINE_COL');
-
+const userInfoModel = mongoose.model('USER_COL', userInfoSchema, 'USER_COL');
 
 module.exports = function (server) {
     var io = socket(server);
@@ -55,8 +61,14 @@ module.exports = function (server) {
             console.log(msg);
             io.emit('receive message', msg);
         });
-    });
 
+        socket.on('personal info', function (msg) {
+            let userInfo = new userInfoModel(msg);
+            userInfo.save(function (err,results,numAffected) {
+                console.log(results, numAffected);
+            });
+        });
+    });
 }
 
 

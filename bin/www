@@ -10,8 +10,6 @@ var http = require('http');
 const server = http.createServer(app);
 const io = require('../app/socket.js')(server);
 var database = require('../database/databaseConfig.js');
-//const io = require('../app/chat.js')(server); 큰동아 잠시 주석
-
 
 /**
  * Get port from environment and store in Express.
@@ -28,13 +26,9 @@ app.set('port', port);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port, function(){
-  console.log("3000연결 성공");
-});
+server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
-database.connect(app);
-
 
 /**
  * Normalize a port into a number, string, or false.

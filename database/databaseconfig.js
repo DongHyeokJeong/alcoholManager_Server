@@ -9,7 +9,7 @@ var database = {};
 
 database.connect = function(app){
     console.log('Database 호촐');
-    var db_url = "mongodb://localhost/AW";
+    var db_url = "mongodb://localhost/AM";
     connect(app, db_url);
 }
 
