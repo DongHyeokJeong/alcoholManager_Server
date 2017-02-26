@@ -9,8 +9,7 @@ var formidable = require('express-formidable');
 
 app.use(formidable());
 
-var database = require('./database/databaseConfig.js');
-database.connect();
+
 
 var index = require('./routes/index');
 var users = require('./routes/users');
