@@ -4,6 +4,12 @@ var path = require('path');
 
 
 /* GET home page. */
+
+router.get('/a', function(req, res, next) {
+    console.log('ㅅㅂ');
+});
+
+
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });

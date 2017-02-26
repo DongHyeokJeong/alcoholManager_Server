@@ -1,15 +1,23 @@
 var express = require('express');
+var app = express();
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var formidable = require('express-formidable');
+
+app.use(formidable());
+
+var database = require('./database/databaseConfig.js');
+database.connect();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
+var timeline = require('./routes/timeLine');
 //var socket = require('./app/socket');
 
-var app = express();
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,6 +33,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/timeline', timeline);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

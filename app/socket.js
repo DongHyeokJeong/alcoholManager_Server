@@ -1,13 +1,12 @@
 /**
  * Created by 양인호꺼 on 2017-02-19.
  */
+"use strict";
 const socket = require('socket.io');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const timelineSchema = mongoose.Schema({
-    TODAY: String
-});
-const userInfoSchema = mongoose.Schema({
+
+/*const userInfoSchema = mongoose.Schema({
     NAME: String,
     WEIGHT: Number,
     SEX: String,
@@ -16,7 +15,7 @@ const userInfoSchema = mongoose.Schema({
 
 const timelineModel = mongoose.model('TIMELINE_COL', timelineSchema, 'TIMELINE_COL');
 const userInfoModel = mongoose.model('USER_COL', userInfoSchema, 'USER_COL');
-
+ */
 module.exports = function (server) {
     var io = socket(server);
 

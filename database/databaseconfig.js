@@ -1,8 +1,9 @@
 /**
  * Created by 양인호꺼 on 2017-02-20.
  */
+"use strict";
 
-var mongoose = require('mongoose');
+let mongoose = require('mongoose');
 
 mongoose.set('debug', true);
 var database = {};
