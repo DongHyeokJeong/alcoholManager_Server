@@ -1,15 +1,13 @@
-#!/usr/bin/env nodeW
+#!/usr/bin/env node
 /**
  * Module dependencies.
  */
+
 var app = require('../app');
 var debug = require('debug')('untitled:server');
 var http = require('http');
 const server = http.createServer(app);
 var database = require('../database/databaseConfig.js');
-database.connect();
-//const io = require('../app/socket.js')(server);
-
 
 /**
  * Get port from environment and store in Express.
@@ -18,6 +16,7 @@ database.connect();
 var port = normalizePort(process.env.PORT || '3000');
 
 app.set('port', port);
+
 /**
  * Create HTTP server.
  */
