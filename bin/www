@@ -6,8 +6,9 @@ var app = require('../app');
 var debug = require('debug')('untitled:server');
 var http = require('http');
 const server = http.createServer(app);
-var database = require('../database/databaseConfig.js');
-database.connect();
+
+var db= require('../database/databaseConfig.js');
+db.connect();
 //const io = require('../app/socket.js')(server);
 
 
