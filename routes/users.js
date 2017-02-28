@@ -16,6 +16,7 @@ let usersSchema = new mongoose.Schema({
     WEIGHT: {type: String},
     SEX: {type: Number},
     CAPACITY: {type: String}
+});
 /* GET users listing. */
 router.get('/', function(req, res, next) {
     res.render('users');
