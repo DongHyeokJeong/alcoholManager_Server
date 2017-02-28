@@ -1,6 +1,3 @@
-/**
- * Created by 양인호꺼 on 2017-02-26.
- */
 "use strict";
 
 var express = require('express');

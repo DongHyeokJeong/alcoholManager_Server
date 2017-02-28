@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>good</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.10/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.6.2/firebase-auth.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyAGP2Haix71w8oT0KU_4GcT22tzNAH7jww",
+            authDomain: "alcoholmanager-b4193.firebaseapp.com",
+            databaseURL: "https://alcoholmanager-b4193.firebaseio.com",
+            storageBucket: "alcoholmanager-b4193.appspot.com",
+            messagingSenderId: "918325756279"
+        };
+        firebase.initializeApp(config);
+        firebase.auth().signInAnonymously().catch(function(error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            console.log(errorCode);
+            console.log(errorMessage);
+        });
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // User is signed in.
+                var isAnonymous = user.isAnonymous;
+                var uid = user.uid;
+                console.log(user);
+                console.log(uid);
+                console.log("login success");
+            } else {
+                // User is signed out.
+                console.log("login fail");
+            }
+            // ...
+        });
+    </script>
+    <script>
+        $(document).ready(function() {
+            $('#btn').click(function (e) {
+                var userName = $('#userName').val();
+                var userWeight = $('#userWeight').val();
+                var userSex = $('#userSex').val();
+                var userCapacity = $('#userCapacity').val();
+
+                if (((userName == "") || (userSex == "")) || (userWeight == "") || (userCapacity == "")) {
+                    alert("Insert All Information!!!");
+                } else {
+                    console.log("good");
+                    firebase.auth().currentUser.getToken(/* forceRefresh */ true).then(function(idToken) {
+                        console.log("token");
+                        var token = idToken;
+                        var json = {};
+                        json["NAME"] = userName;
+                        json["WEIGHT"] = userWeight;
+                        json["SEX"] = userSex;
+                        json["CAPACITY"] = userCapacity;
+                        json["TOKEN"] = token;
+
+                        $.ajax({
+                            type : 'post',
+                            url : '/users',
+                            data : json,
+                            success : function(result) {
+                                if (result.status == "FAIL") {
+                                    alert('fail');
+                                } else if (result.status == "SUCCESS") {
+                                    alert('success');
+                                }
+                            }
+                        });
+                    }).catch(function(error) {
+                        // Handle error
+                    });
+                }
+            });
+        });
+    </script>
+  </head>
+  <body>
+    <form action="" id="loginForm">
+      NAME  : <input type="text" id="userName"><br>
+      WEIGHT  : <input type="text" id="userWeight"><br>
+      SEX  : <input type="text" id="userSex"><br>
+      CAPACITY : <input type="text" id="userCapacity">
+      <input id="btn" type="submit">
+    </form>
+  </body>
+</html>
