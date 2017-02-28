@@ -3,12 +3,13 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 let mongoose = require('mongoose');
-var firebase = require("firebase");
+//var firebase = require("firebase");
 
-firebase.initializeApp({
+/*firebase.initializeApp({
     serviceAccount: "./serviceAccountCredentials.json",
     databaseURL: "https://achohol-manager.firebaseio.com/"
 });
+ */
 
 let usersSchema = new mongoose.Schema({
     USERTOKEN: {type: String},

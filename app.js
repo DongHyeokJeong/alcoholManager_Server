@@ -6,13 +6,13 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var formidable = require('express-formidable');
-const firebase = require('firebase');
+const admin = require('firebase-admin');
 
 app.use(formidable());
 
 //firebase setup
-firebase.initializeApp({
-    serviceAccount: {
+admin.initializeApp({
+    credential: admin.credential.cert({
         type: "service_account",
         project_id: "alcoholmanager-b4193",
         private_key_id: "83364ae673ffcc4822c1567131160ded57bb924f",
@@ -23,7 +23,7 @@ firebase.initializeApp({
         token_uri: "https://accounts.google.com/o/oauth2/token",
         auth_provider_x509_cert_url: "https://www.googleapis.com/oauth2/v1/certs",
         client_x509_cert_url: "https://www.googleapis.com/robot/v1/metadata/x509/alcoholserver%40alcoholmanager-b4193.iam.gserviceaccount.com"
-    },
+    }),
     databaseURL: "https://alcoholmanager-b4193.firebaseio.com/"
 });
 

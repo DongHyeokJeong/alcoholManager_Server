@@ -8,6 +8,7 @@ var debug = require('debug')('untitled:server');
 var http = require('http');
 const server = http.createServer(app);
 var database = require('../database/databaseConfig.js');
+database.connect(app);
 
 /**
  * Get port from environment and store in Express.
