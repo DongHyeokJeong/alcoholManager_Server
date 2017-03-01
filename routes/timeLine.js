@@ -8,10 +8,11 @@ let mongoose = require('mongoose');
 let timeLineSchema = new mongoose.Schema({
     TODAY: {type: String},
     USERTOKEN: {type: String},
+    USERNAME : {type: String},
     TIMELINE_DATA: [{
         TIME: {type: String},
         KIND: {type: String},
-        SHOT: {type: String},
+        SHOT: {type: Number},
         STICKER: {type: [Number]}
     }
     ]
@@ -29,10 +30,10 @@ router.get('/', routerTimeLineShow);     //timeline 보기
 //********************** router 내 사용함수 정의***************************//
 //1. timeLine 객체 만들기
 function routerTimeLineObjectAdd(req, res, next) {
-    let today = req.fields.today;
     let usertoken = req.fields.usertoken;
+    let username = req.fields.username;
 
-    timeLineModel.timeLineObjectAdd(today, usertoken, function (err, result) {
+    timeLineModel.timeLineObjectAdd(username, usertoken, function (err, result) {
         if (err) {
             res.json({msg: "timelineObject register fail"});
             console.log('타임라인 객체 등록 실패');
@@ -45,10 +46,10 @@ function routerTimeLineObjectAdd(req, res, next) {
     });
 }
 
-timeLineModel.timeLineObjectAdd = function(today, usertoken, callback){
+timeLineModel.timeLineObjectAdd = function(usertoken, callback){
     const timeLineObjectData = {
-        TODAY: today,
         USERTOKEN: usertoken,
+        USERNAME : username,
         TMIELINE_DATA: []
     };
 
