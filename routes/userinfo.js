@@ -91,20 +91,144 @@ usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callbac
     });
 };
 
+
 // 2.user Data 보여주는 함수
 function routerUserinfoShow(req, res, next) {
+    let usertoken = req.headers['usertoken'];
 
+    firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
+        var uid = decodedToken.uid;
 
+        usersModel.usersCheck(uid, function (err, result) {
+            if (err) {
+                res.json({msg: "user show fail"});
+                console.log('유저 검색 실패');
+                console.log(err);
+            }
+            else {
+                res.json({ username: result[0].USERNAME,
+                    weight : result[0].WEIGHT,
+                    sex : result[0].SEX,
+                    capacity : result[0].CAPACITY});
+
+                console.log('유저 검색 성공');
+            }
+        })
+    }).catch(function (error) {
+        // Handle error
+    });
 }
 
-// 3.user Data 바꾸는 함수
-function routerUserinfoChange(req, res, next) {
-    let usertoken = req.fields.usertoken;
-    let username = req.fields.username;
-    let weight = req.fields.weight;
-    let sex = req.fields.sex;
-    let capacity = req.fields.capacity;
+/*function routerUserinfoShow(req, res, next) {
+    let uid = 'kk';
 
+    usersModel.usersCheck(uid, function (err, result) {
+            if (err) {
+                res.json({msg: "user register fail"});
+                console.log('유저 검색 실패');
+                console.log(err);
+            }
+            else {
+                res.json({ username: result[0].USERNAME,
+                           weight : result[0].WEIGHT,
+                           sex : result[0].SEX,
+                           capacity : result[0].CAPACITY});
+
+                console.log('유저 검색 성공');
+            }
+    })
+}*/
+
+usersModel.usersCheck = function(uid, callback){
+    usersModel.find({USERTOKEN:uid}, function(err, result){
+        if (err) {
+            callback(new Error('유저 검색 실패'));
+        } else {
+            callback(null, result);
+        }
+    });
+}
+
+
+// 3.user Data 바꾸는 함수
+/*function routerUserinfoChange(req, res, next) {
+    let username = req.body.username;
+    let weight = req.body.weight;
+    let sex = req.body.sex;
+    let capacity = req.body.capacity;
+    let uid = req.body.usertoken;
+
+    usersModel.usersChange(uid, username, weight,sex,capacity, function (err,result) {
+        if (err) {
+            res.json({msg: "user update fail"});
+            console.log('유저 수정 실패');
+            console.log(err);
+        }
+        else {
+            console.log('유저 수정 성공');
+            res.json({ username: result.USERNAME,
+                weight : result.WEIGHT,
+                sex : result.SEX,
+                capacity : result.CAPACITY});
+        }
+    })
+}*/
+
+function routerUserinfoChange(req, res, next) {
+    let username = req.body.username;
+    let weight = req.body.weight;
+    let sex = req.body.sex;
+    let capacity = req.body.capacity;
+    let usertoken = req.body.usertoken;
+
+    firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
+        var uid = decodedToken.uid;
+
+        usersModel.usersChange(uid, username, weight,sex,capacity, function (err,result) {
+            if (err) {
+                res.json({msg: "user update fail"});
+                console.log('유저 수정 실패');
+                console.log(err);
+            }
+            else {
+                console.log('유저 수정 성공');
+                res.json({ username: result.USERNAME,
+                    weight : result.WEIGHT,
+                    sex : result.SEX,
+                    capacity : result.CAPACITY});
+            }
+        }).catch(function (error) {
+            // Handle error
+        });
+    })
+}
+
+
+
+
+
+
+
+
+
+
+usersModel.usersChange = function(uid, username, weight,sex,capacity, callback){
+    usersModel.findOne({USERTOKEN:uid}).exec(function(err, doc){
+        if (err) {
+            callback(new Error('유저 수정 실패'));
+        } else {
+            doc.set('USERNAME',username);
+            doc.set('WEIGHT',weight);
+            doc.set('SEX',sex);
+            doc.set('CAPACITY',capacity);
+
+            doc.save(function (err) {
+                usersModel.findOne({USERTOKEN:uid}).exec(function(err, doc){
+                    callback(null, doc);
+                });
+            });
+        }
+    });
 }
 
 module.exports = router;
