@@ -106,7 +106,8 @@ timeLineModel.timeLineAdd = function (usertoken, kind, shot, time, callback) {
 
 // 3.timeline Data 보기함수
 function routerTimeLineShow(req, res, next) {
-    let usertoken = req.param('usertoken');
+    //let usertoken = req.param('usertoken');
+    let usertoken = req.fields.usertoken;
     //let today = req,fields.today;이건 아직
     timeLineModel.find({USERTOKEN : usertoken}, function (err, result) {
         if (err) {
