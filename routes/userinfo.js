@@ -26,6 +26,32 @@ router.put('/', routerUserinfoChange);
 //********************** router 내 사용함수 정의***************************//
 // 1.user Data 등록함수
 /*function routerUserinfoAdd(req, res, next) {
+ let usertoken = req.body.usertoken;
+ let username = req.body.username;
+ let weight = req.body.weight;
+ let sex = req.body.sex;
+ let capacity = req.body.capacity;
+
+ firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
+    var uid = decodedToken.uid;
+
+     usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result){
+         if(err){
+             res.json({ msg:"user register fail"});
+             console.log('유저 등록 실패');
+             console.log(err);
+         }
+         else{
+             res.json({ msg: 'user register success', data : result});
+             console.log('유저 등록 성공');
+         }
+         })// ...
+         }).catch(function(error) {
+             // Handle error
+         });
+ }*/
+
+function routerUserinfoAdd(req, res, next) {     //테스트용
     let usertoken = req.body.usertoken;
     let username = req.body.username;
     let weight = req.body.weight;
@@ -44,32 +70,6 @@ router.put('/', routerUserinfoChange);
         }
     })
 
-}*/
-
-function routerUserinfoAdd(req, res, next) {
-    let usertoken = req.body.usertoken;
-    let username = req.body.username;
-    let weight = req.body.weight;
-    let sex = req.body.sex;
-    let capacity = req.body.capacity;
-
-    firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
-        var uid = decodedToken.uid;
-
-        usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result){
-            if(err){
-                res.json({ msg:"user register fail"});
-                console.log('유저 등록 실패');
-                console.log(err);
-            }
-            else{
-                res.json({ msg: 'user register success', data : result});
-                console.log('유저 등록 성공');
-            }
-        })// ...
-    }).catch(function(error) {
-        // Handle error
-    });
 }
 
 usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callback){
@@ -92,8 +92,8 @@ usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callbac
 };
 
 
-// 2.user Data 보여주는 함수
-function routerUserinfoShow(req, res, next) {
+// 2.user Data 보여주는 함수____________________________________________________________________________________
+/*function routerUserinfoShow(req, res, next) {
     let usertoken = req.headers['usertoken'];
 
     firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
@@ -117,9 +117,9 @@ function routerUserinfoShow(req, res, next) {
     }).catch(function (error) {
         // Handle error
     });
-}
+}*/
 
-/*function routerUserinfoShow(req, res, next) {
+function routerUserinfoShow(req, res, next) {    //테스트용
     let uid = 'kk';
 
     usersModel.usersCheck(uid, function (err, result) {
@@ -137,7 +137,7 @@ function routerUserinfoShow(req, res, next) {
                 console.log('유저 검색 성공');
             }
     })
-}*/
+}
 
 usersModel.usersCheck = function(uid, callback){
     usersModel.find({USERTOKEN:uid}, function(err, result){
@@ -150,31 +150,8 @@ usersModel.usersCheck = function(uid, callback){
 }
 
 
-// 3.user Data 바꾸는 함수
+// 3.user Data 바꾸는 함수 ------------------------------------------------------------------------------------
 /*function routerUserinfoChange(req, res, next) {
-    let username = req.body.username;
-    let weight = req.body.weight;
-    let sex = req.body.sex;
-    let capacity = req.body.capacity;
-    let uid = req.body.usertoken;
-
-    usersModel.usersChange(uid, username, weight,sex,capacity, function (err,result) {
-        if (err) {
-            res.json({msg: "user update fail"});
-            console.log('유저 수정 실패');
-            console.log(err);
-        }
-        else {
-            console.log('유저 수정 성공');
-            res.json({ username: result.USERNAME,
-                weight : result.WEIGHT,
-                sex : result.SEX,
-                capacity : result.CAPACITY});
-        }
-    })
-}*/
-
-function routerUserinfoChange(req, res, next) {
     let username = req.body.username;
     let weight = req.body.weight;
     let sex = req.body.sex;
@@ -201,16 +178,30 @@ function routerUserinfoChange(req, res, next) {
             // Handle error
         });
     })
+}*/
+
+function routerUserinfoChange(req, res, next) {  //테스트용
+    let username = req.body.username;
+    let weight = req.body.weight;
+    let sex = req.body.sex;
+    let capacity = req.body.capacity;
+    let uid = req.body.usertoken;
+
+    usersModel.usersChange(uid, username, weight,sex,capacity, function (err,result) {
+        if (err) {
+            res.json({msg: "user update fail"});
+            console.log('유저 수정 실패');
+            console.log(err);
+        }
+        else {
+            console.log('유저 수정 성공');
+            res.json({ username: result.USERNAME,
+                weight : result.WEIGHT,
+                sex : result.SEX,
+                capacity : result.CAPACITY});
+        }
+    })
 }
-
-
-
-
-
-
-
-
-
 
 usersModel.usersChange = function(uid, username, weight,sex,capacity, callback){
     usersModel.findOne({USERTOKEN:uid}).exec(function(err, doc){
