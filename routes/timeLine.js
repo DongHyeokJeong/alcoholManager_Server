@@ -202,6 +202,10 @@ function routerTimeLineSync(req, res, next) {
     let userToken = req.headers['usertoken'];
     let timeLine = req.body.timeline;
 
+    console.log('--------------------------------');
+    console.log(userToken);
+    console.log(timeLine);
+    console.log('--------------------------------');
     timeLineModel.timeLineSync(userToken, timeLine, function (err, result) {
         if (err) {
             res.json({msg: "timeline sync fail"});
