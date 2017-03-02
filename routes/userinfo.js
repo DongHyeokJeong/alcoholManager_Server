@@ -33,6 +33,8 @@ function routerUserinfoAdd(req, res, next) {
  let capacity = req.body.capacity;
  /*let logintype = req.body.logintype;  // 1:익명 2:페이스북*/
 
+ console.log(usertoken);
+
  firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
     let uid = decodedToken.uid;
 
