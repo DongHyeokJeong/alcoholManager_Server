@@ -31,11 +31,49 @@ function routerUserinfoAdd(req, res, next) {
  let weight = req.body.weight;
  let sex = req.body.sex;
  let capacity = req.body.capacity;
+ let uid;
  /*let logintype = req.body.logintype;  // 1:익명 2:페이스북*/
 
  console.log(usertoken);
 
- firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
+    var credential = firebase.auth.FacebookAuthProvider.credential(usertoken);
+
+// Sign in with credential from the Google user.
+    firebase.auth().signInWithCredential(credential).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                var user = firebase.auth().currentUser;
+
+                if (user != null) {
+                    uid = user.uid;
+                    usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result) {
+                        if (err) {
+                            res.json({msg: "user register fail"});
+                            console.log('유저 등록 실패');
+                            console.log(err);
+                        }
+                        else {
+                            res.json({msg: 'user register success', data: result});
+                            console.log('유저 등록 성공');
+                        }
+                    })
+                }
+            } else {
+                // No user is signed in.
+            }
+        });
+    });
+
+ /*firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
     let uid = decodedToken.uid;
 
      usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result){
@@ -51,7 +89,7 @@ function routerUserinfoAdd(req, res, next) {
          })// ...
          }).catch(function(error) {
              console.log(error);
-         });
+         });*/
  }
 
 /*function routerUserinfoAdd(req, res, next) {     //테스트용
