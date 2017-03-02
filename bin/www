@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 /**
  * Module dependencies.
  */
@@ -8,14 +9,16 @@ var debug = require('debug')('untitled:server');
 var http = require('http');
 const server = http.createServer(app);
 var database = require('../database/databaseConfig.js');
-database.connect(app);
+
+/*const io = require('../socket.io/socket.js')(server);*/
+
+database.connect();
 
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || '3000');
-
 app.set('port', port);
 
 /**

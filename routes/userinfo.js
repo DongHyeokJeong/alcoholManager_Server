@@ -25,15 +25,16 @@ router.put('/', routerUserinfoChange);
 
 //********************** router 내 사용함수 정의***************************//
 // 1.user Data 등록함수
-/*function routerUserinfoAdd(req, res, next) {
+function routerUserinfoAdd(req, res, next) {
  let usertoken = req.body.usertoken;
  let username = req.body.username;
  let weight = req.body.weight;
  let sex = req.body.sex;
  let capacity = req.body.capacity;
+ /*let logintype = req.body.logintype;  // 1:익명 2:페이스북*/
 
  firebase.auth().verifyIdToken(usertoken).then(function(decodedToken) {
-    var uid = decodedToken.uid;
+    let uid = decodedToken.uid;
 
      usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result){
          if(err){
@@ -47,11 +48,11 @@ router.put('/', routerUserinfoChange);
          }
          })// ...
          }).catch(function(error) {
-             // Handle error
+             console.log(error);
          });
- }*/
+ }
 
-function routerUserinfoAdd(req, res, next) {     //테스트용
+/*function routerUserinfoAdd(req, res, next) {     //테스트용
     let usertoken = req.body.usertoken;
     let username = req.body.username;
     let weight = req.body.weight;
@@ -70,7 +71,7 @@ function routerUserinfoAdd(req, res, next) {     //테스트용
         }
     })
 
-}
+}*/
 
 usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callback){
     const userData = {
@@ -93,7 +94,7 @@ usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callbac
 
 
 // 2.user Data 보여주는 함수____________________________________________________________________________________
-/*function routerUserinfoShow(req, res, next) {
+function routerUserinfoShow(req, res, next) {
     let usertoken = req.headers['usertoken'];
 
     firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
@@ -115,11 +116,11 @@ usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callbac
             }
         })
     }).catch(function (error) {
-        // Handle error
+        console.log(error);
     });
-}*/
+}
 
-function routerUserinfoShow(req, res, next) {    //테스트용
+/*function routerUserinfoShow(req, res, next) {    //테스트용
     let uid = 'kk';
 
     usersModel.usersCheck(uid, function (err, result) {
@@ -137,7 +138,7 @@ function routerUserinfoShow(req, res, next) {    //테스트용
                 console.log('유저 검색 성공');
             }
     })
-}
+}*/
 
 usersModel.usersCheck = function(uid, callback){
     usersModel.find({USERTOKEN:uid}, function(err, result){
@@ -151,7 +152,7 @@ usersModel.usersCheck = function(uid, callback){
 
 
 // 3.user Data 바꾸는 함수 ------------------------------------------------------------------------------------
-/*function routerUserinfoChange(req, res, next) {
+function routerUserinfoChange(req, res, next) {
     let username = req.body.username;
     let weight = req.body.weight;
     let sex = req.body.sex;
@@ -175,12 +176,12 @@ usersModel.usersCheck = function(uid, callback){
                     capacity : result.CAPACITY});
             }
         }).catch(function (error) {
-            // Handle error
+            console.log(error);
         });
     })
-}*/
+}
 
-function routerUserinfoChange(req, res, next) {  //테스트용
+/*function routerUserinfoChange(req, res, next) {  //테스트용
     let username = req.body.username;
     let weight = req.body.weight;
     let sex = req.body.sex;
@@ -201,7 +202,7 @@ function routerUserinfoChange(req, res, next) {  //테스트용
                 capacity : result.CAPACITY});
         }
     })
-}
+}*/
 
 usersModel.usersChange = function(uid, username, weight,sex,capacity, callback){
     usersModel.findOne({USERTOKEN:uid}).exec(function(err, doc){
