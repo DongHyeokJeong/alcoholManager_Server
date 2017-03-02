@@ -55,6 +55,9 @@ function routerUserinfoAdd(req, res, next) {
 
                 if (user != null) {
                     uid = user.uid;
+
+                    console.log("uid : " + uid);
+
                     usersModel.usersAdd(uid, username, weight,sex,capacity, function(err, result) {
                         if (err) {
                             res.json({msg: "user register fail"});
@@ -136,8 +139,58 @@ usersModel.usersAdd = function(usertoken, username, weight,sex,capacity, callbac
 // 2.user Data 보여주는 함수____________________________________________________________________________________
 function routerUserinfoShow(req, res, next) {
     let usertoken = req.headers['usertoken'];
+    let uid;
 
-    firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
+    var credential = firebase.auth.FacebookAuthProvider.credential(usertoken);
+
+// Sign in with credential from the Google user.
+    firebase.auth().signInWithCredential(credential).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+
+        firebase.auth().onAuthStateChanged(function (user) {
+            if (user) {
+                var user = firebase.auth().currentUser;
+
+                if (user != null) {
+                    uid = user.uid;
+
+                    console.log("uid : " + uid);
+
+                    var uid = decodedToken.uid;
+
+                    usersModel.usersCheck(uid, function (err, result) {
+                        if (err) {
+                            res.json({msg: "user show fail"});
+                            console.log('유저 검색 실패');
+                            console.log(err);
+                        }
+                        else {
+                            res.json({
+                                username: result[0].USERNAME,
+                                weight: result[0].WEIGHT,
+                                sex: result[0].SEX,
+                                capacity: result[0].CAPACITY
+                            });
+
+                            console.log('유저 검색 성공');
+                        }
+                    })
+                }
+            } else {
+                // No user is signed in.
+            }
+        });
+    });
+
+
+    /*firebase.auth().verifyIdToken(usertoken).then(function (decodedToken) {
         var uid = decodedToken.uid;
 
         usersModel.usersCheck(uid, function (err, result) {
@@ -157,7 +210,7 @@ function routerUserinfoShow(req, res, next) {
         })
     }).catch(function (error) {
         console.log(error);
-    });
+    });*/
 }
 
 /*function routerUserinfoShow(req, res, next) {    //테스트용
