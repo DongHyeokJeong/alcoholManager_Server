@@ -6,10 +6,11 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var index = require('./routes/index');
-var userinfo = require('./routes/userinfo');
-var timeline = require('./routes/timeLine');
-var analysis = require('./routes/analysis');
+let userinfo = require('./routes/userinfo');
+let timeline = require('./routes/timeLine');
+let analysis = require('./routes/analysis');
+let login = require('./routes/login/login.server.router');
+
 //var socket = require('./app/socket');
 
 // view engine setup
@@ -24,9 +25,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
 app.use('/userinfo', userinfo);
 app.use('/timeline', timeline);
+app.use('/login', login);
 /*app.use('/analysis', analysis);*/
 
 // catch 404 and forward to error handler
