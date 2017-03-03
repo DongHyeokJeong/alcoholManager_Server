@@ -74,6 +74,7 @@ function routerTimeLineAdd(req, res, next) {
     let alcolId = req.body.alcolid;
     let shot = req.body.shot;
 
+
     timeLineModel.timeLineAdd(usertoken, time, alcolId, shot, function (err, result) {
         if (err) {
             res.json({msg: "timeline register fail"});
@@ -92,10 +93,12 @@ function routerTimeLineAdd(req, res, next) {
 timeLineModel.timeLineAdd = function (usertoken, time, alcolId, shot, callback) {
     const timeLineData = {
         TIME: time,
-        ALCOLID: alcolid,
+        ALCOLID: alcolId,
         SHOT: shot
     };
-
+    console.log("--------------------------------");
+    console.log(timeLineData);
+    console.log("--------------------------------");
 
     timeLineModel.update({USERTOKEN: usertoken}, {'$push': {'TIMELINE_DATA': timeLineData}}, function (err, result) {
         if (err) {
@@ -206,6 +209,8 @@ function routerTimeLineSync(req, res, next) {
     console.log(userToken);
     console.log(timeLine);
     console.log('--------------------------------');
+
+
     timeLineModel.timeLineSync(userToken, timeLine, function (err, result) {
         if (err) {
             res.json({msg: "timeline sync fail"});
@@ -221,7 +226,7 @@ function routerTimeLineSync(req, res, next) {
 
 timeLineModel.timeLineSync = function (userToken, timeLine, callback) {
 
-    timeLineModel.update({USERTOKEN: userToken}, {'$push': {'TIMELINE_DATA': timeLine}}, function (err, result) {
+    timeLineModel.update({USERTOKEN: userToken}, {$addToSet: {'TIMELINE_DATA': {$each : timeLine}}}, function (err, result) {
         if (err) {
             callback(new Error('타임라인 등록 실패'));
         }
