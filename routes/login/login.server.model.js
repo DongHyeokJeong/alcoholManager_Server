@@ -9,7 +9,7 @@ let usersSchema  = new Schema({
     WEIGHT: {type: Number},
     SEX: {type: Number},
     CAPACITY: {type: Number},
-    CUMTOMTOKEN: {type: Number}
+    JWT_UID: {type: String}
 });
 
 module.exports = mongoose.model('USERS_COL',usersSchema, 'USERS_COL');

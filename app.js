@@ -11,8 +11,6 @@ let timeline = require('./routes/timeLine');
 let analysis = require('./routes/analysis');
 let login = require('./routes/login/login.server.router');
 
-//var socket = require('./app/socket');
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
