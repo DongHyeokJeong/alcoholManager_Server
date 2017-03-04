@@ -1,3 +1,4 @@
+"use strict";
 var express = require('express');
 var app = express();
 var path = require('path');
@@ -7,9 +8,12 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
 let userinfo = require('./routes/userinfo');
-let timeline = require('./routes/timeLine');
-let analysis = require('./routes/analysis');
+let timeLine = require('./routes/timeline/timeLine.router');
+let analysis = require('./routes/analysis/analysis.router');
 let login = require('./routes/login/login.server.router');
+
+
+//var socket = require('./app/socket');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -24,9 +28,9 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/userinfo', userinfo);
-app.use('/timeline', timeline);
+app.use('/timeline', timeLine);
 app.use('/login', login);
-/*app.use('/analysis', analysis);*/
+app.use('/analysis', analysis);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
