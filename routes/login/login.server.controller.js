@@ -139,7 +139,7 @@ usersModel.guestUsersAdd = function(firebase_uid, username, weight, sex, capacit
 
 //2) 페이스북 로그인 생성 함수
 usersModel.FBUsersAdd = function(accessToken,email, username, weight, sex, capacity, callback){
-    //맞춤 토큰생성
+    //맞춤 토큰생성 만들어야함!!
     var uid = "54321";
     var customToken = firebase.auth().createCustomToken(uid);
 
