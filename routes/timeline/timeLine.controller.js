@@ -1,22 +1,16 @@
+"use strict";
+const express = require('express');
+const router = express.Router();
+const firebase = require('../../firebase/firebaseConfig');
+const timeLineModel = require('./timeLine.model.js');
 
 
-
-//***************************routetr 사용*******************************//
-
-router.post('/object', routerTimeLineObjectAdd);    //timeine 객체 만들기
-router.post('/', routerTimeLineAdd);    //timeine 등록
-router.get('/', routerTimeLineShow);     //timeline 보기
-router.put('/sticker', routerTimeLineAddSticker);     //timeline sticker 붙이기
-router.put('/sticker', routerTimeLineDeleteSticker);     //timeline sticker 삭제하기
-router.post('/sync', routerTimeLineSync);     //timeline data 안드와 동기화
-
-//********************** router 내 사용함수 정의***************************//
 //1. timeLine 객체 만들기
-function routerTimeLineObjectAdd(req, res, next) {
+exports.routerTimeLineObjectAdd = function (req, res, next) {
     let username = req.body.username;
-    let usertoken = req.body.usertoken;
+    let uid = req.body.uid;
 
-    timeLineModel.timeLineObjectAdd(username, usertoken, function (err, result) {
+    timeLineModel.timeLineObjectAdd(username, uid, function (err, result) {
         if (err) {
             res.json({msg: "timelineObject register fail"});
             console.log('타임라인 객체 등록 실패');
@@ -29,10 +23,10 @@ function routerTimeLineObjectAdd(req, res, next) {
     });
 }
 
-timeLineModel.timeLineObjectAdd = function (username, usertoken, callback) {
+timeLineModel.timeLineObjectAdd = function (username, uid, callback) {
     const timeLineObjectData = {
         USERNAME: username,
-        USERTOKEN: usertoken,
+        UID: uid,
         TMIELINE_DATA: []
     };
 
@@ -48,14 +42,14 @@ timeLineModel.timeLineObjectAdd = function (username, usertoken, callback) {
 
 
 // 2.timeline Data등록함수
-function routerTimeLineAdd(req, res, next) {
-    let usertoken = req.body.usertoken;
+exports.routerTimeLineAdd = function (req, res, next) {
+    let uid = req.body.uid;
     let time = req.body.time;
     let alcolId = req.body.alcolid;
     let shot = req.body.shot;
 
 
-    timeLineModel.timeLineAdd(usertoken, time, alcolId, shot, function (err, result) {
+    timeLineModel.timeLineAdd(uid, time, alcolId, shot, function (err, result) {
         if (err) {
             res.json({msg: "timeline register fail"});
             console.log('타임라인 등록 실패');
@@ -70,7 +64,7 @@ function routerTimeLineAdd(req, res, next) {
 }
 
 
-timeLineModel.timeLineAdd = function (usertoken, time, alcolId, shot, callback) {
+timeLineModel.timeLineAdd = function (uid, time, alcolId, shot, callback) {
     const timeLineData = {
         TIME: time,
         ALCOLID: alcolId,
@@ -80,7 +74,7 @@ timeLineModel.timeLineAdd = function (usertoken, time, alcolId, shot, callback) 
     console.log(timeLineData);
     console.log("--------------------------------");
 
-    timeLineModel.update({USERTOKEN: usertoken}, {'$push': {'TIMELINE_DATA': timeLineData}}, function (err, result) {
+    timeLineModel.update({UID: uid}, {'$push': {'TIMELINE_DATA': timeLineData}}, function (err, result) {
         if (err) {
             callback(new Error('타임라인 등록 실패'));
         }
@@ -91,11 +85,11 @@ timeLineModel.timeLineAdd = function (usertoken, time, alcolId, shot, callback) 
 };
 
 // 3.timeline Data 보기함수
-function routerTimeLineShow(req, res, next) {
-    //let usertoken = req.param('usertoken');
-    let usertoken = req.headers['usertoken'];
+exports.routerTimeLineShow = function (req, res, next) {
+    //let uid = req.param('uid');
+    let uid = req.headers['uid'];
     //let today = req,body.today;이건 아직
-    timeLineModel.find({USERTOKEN: usertoken}, function (err, result) {
+    timeLineModel.find({UID: uid}, function (err, result) {
         if (err) {
             res.json({msg: "timeline show fail"});
             console.log('타임라인 불러오기 실패');
@@ -104,19 +98,19 @@ function routerTimeLineShow(req, res, next) {
         else {
             res.json({msg: 'timeline show success', data: result});
             console.log('타임라인 불러오기 성공');
-            console.log(usertoken);
+            console.log(uid);
         }
     })
 }
 
 //4. timeline sticker 추가하기
-function routerTimeLineAddSticker(req, res, next) {
+exports.routerTimeLineAddSticker = function (req, res, next) {
 
     let timelineid = req.body.timelineid;
-    let usertoken = req.body.usertoken;
+    let uid = req.body.uid;
     let sticker = req.body.sticker;
 
-    timeLineModel.timeLineAddSticker(timelineid, usertoken, sticker, function (err, result) {
+    timeLineModel.timeLineAddSticker(timelineid, uid, sticker, function (err, result) {
         if (err) {
             res.json({msg: "timeline sticker register fail"});
             console.log('타임라인 스티커 등록 실패');
@@ -129,7 +123,7 @@ function routerTimeLineAddSticker(req, res, next) {
     });
 }
 
-timeLineModel.timeLineAddSticker = function (timelineid, usertoken, sticker, callback) {
+timeLineModel.timeLineAddSticker = function (timelineid, uid, sticker, callback) {
     timeLineModel.update(
         //{"TIMELINE_DATA": {$elemMatch: {"_id": ObjectId(timelineid)}}},
         {"TIMELINE_DATA": {$elemMatch: {"_id": timelineid}}},
@@ -146,13 +140,13 @@ timeLineModel.timeLineAddSticker = function (timelineid, usertoken, sticker, cal
 };
 
 //5. timeline sticker 삭제하기
-function routerTimeLineDeleteSticker(req, res, next) {
+exports.routerTimeLineDeleteSticker =function (req, res, next) {
 
     let timelineid = req.body.timelineid;
-    let usertoken = req.body.usertoken;
+    let uid = req.body.uid;
     let sticker = req.body.sticker;
 
-    timeLineModel.timeLineDeleteSticker(timelineid, usertoken, sticker, function (err, result) {
+    timeLineModel.timeLineDeleteSticker(timelineid, uid, sticker, function (err, result) {
         if (err) {
             res.json({msg: "timeline sticker delete fail"});
             console.log('타임라인 스티커 삭제 실패');
@@ -165,7 +159,7 @@ function routerTimeLineDeleteSticker(req, res, next) {
     });
 }
 
-timeLineModel.timeLineDeleteSticker = function (timelineid, usertoken, sticker, callback) {
+timeLineModel.timeLineDeleteSticker = function (timelineid, uid, sticker, callback) {
     timeLineModel.update(
         {"TIMELINE_DATA": {$elemMatch: {"_id": timelineid}}},
         {$pull: {"TIMELINE_DATA.$.STICKER": sticker}},
@@ -181,17 +175,17 @@ timeLineModel.timeLineDeleteSticker = function (timelineid, usertoken, sticker, 
 };
 
 //6. timeline data 안드와 동기화
-function routerTimeLineSync(req, res, next) {
-    let userToken = req.headers['usertoken'];
+exports.routerTimeLineSync = function(req, res, next) {
+    let uid = req.headers['uid'];
     let timeLine = req.body.timeline;
 
     console.log('--------------------------------');
-    console.log(userToken);
+    console.log(uid);
     console.log(timeLine);
     console.log('--------------------------------');
 
 
-    timeLineModel.timeLineSync(userToken, timeLine, function (err, result) {
+    timeLineModel.timeLineSync(uid, timeLine, function (err, result) {
         if (err) {
             res.json({msg: "timeline sync fail"});
             console.log('타임라인 동기화 실패');
@@ -204,9 +198,9 @@ function routerTimeLineSync(req, res, next) {
     });
 };
 
-timeLineModel.timeLineSync = function (userToken, timeLine, callback) {
+timeLineModel.timeLineSync = function (uid, timeLine, callback) {
 
-    timeLineModel.update({USERTOKEN: userToken}, {$addToSet: {'TIMELINE_DATA': {$each : timeLine}}}, function (err, result) {
+    timeLineModel.update({UID: uid}, {$addToSet: {'TIMELINE_DATA': {$each : timeLine}}}, function (err, result) {
         if (err) {
             callback(new Error('타임라인 등록 실패'));
         }
@@ -215,7 +209,3 @@ timeLineModel.timeLineSync = function (userToken, timeLine, callback) {
         }
     });
 };
-
-
-module.exports = router;
-
