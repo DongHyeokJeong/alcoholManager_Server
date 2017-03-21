@@ -6,6 +6,8 @@ let FB = require('fb');
 const firebase = require('../../firebase/firebaseConfig');
 const usersModel = require('./login.server.model.js');
 
+let uid_producer=1000;
+
 /*1)게스트로 로그인하기*/
 exports.loginAsGuest = function(req, res, next) {
     let usertoken = req.body.usertoken;
@@ -114,7 +116,8 @@ exports.loginAsFacebook = function(req, res, next) {
 //1) 게스트 로그인 생성 함수
 usersModel.guestUsersAdd = function(firebase_uid, username, weight, sex, capacity, callback){
     //맞춤 토큰생성
-    var uid = "12345";
+    var uid = uid_producer;
+    uid_producer++;
     var customToken = firebase.auth().createCustomToken(uid);
 
     const userData = {
@@ -139,8 +142,9 @@ usersModel.guestUsersAdd = function(firebase_uid, username, weight, sex, capacit
 
 //2) 페이스북 로그인 생성 함수
 usersModel.FBUsersAdd = function(accessToken,email, username, weight, sex, capacity, callback){
-    //맞춤 토큰생성 만들어야함!!
-    var uid = "54321";
+    //맞춤 토큰생성
+    var uid = uid_producer;
+    uid_producer++;
     var customToken = firebase.auth().createCustomToken(uid);
 
     const userData = {
